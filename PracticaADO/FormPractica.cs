@@ -35,6 +35,11 @@ namespace PracticaADO
 
         private void cmbclientes_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (this.cmbclientes.SelectedIndex != -1)
+            {
+                string cliente = this.cmbclientes.SelectedItem.ToString();
+
+            }
         }
     }
 }

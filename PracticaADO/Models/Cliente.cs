@@ -11,6 +11,7 @@ namespace PracticaADO.Models
         public string CodigoCliente { get; set; }
         public string Empresa { get; set; }
         public string Contacto { get; set; }
+        public string Cargo { get; set; }
         public string Ciudad { get; set; }
         public int Telefono { get; set; }
     }

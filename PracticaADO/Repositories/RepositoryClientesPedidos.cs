@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PracticaADO.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -13,6 +14,26 @@ CREATE OR ALTER PROCEDURE SP_CLIENTES
 AS
 	SELECT *
 	FROM clientes
+GO
+
+CREATE OR ALTER PROCEDURE SP_DATOS_CLIENTE
+(@NOM_CLIENTE NVARCHAR(MAX))
+AS
+	SELECT *
+	FROM clientes
+	WHERE Empresa = @NOM_CLIENTE
+GO
+
+CREATE OR ALTER PROCEDURE SP_PEDIDOS_CLIENTE
+(@NOM_CLIENTE NVARCHAR(MAX))
+AS
+	DECLARE @COD_CLIENTE NVARCHAR(MAX)
+	SELECT @COD_CLIENTE = CodigoCliente
+	FROM clientes
+	WHERE Empresa = @NOM_CLIENTE
+	SELECT *
+	FROM pedidos
+	WHERE CodigoCliente = @COD_CLIENTE
 GO
 */
 
@@ -48,6 +69,24 @@ namespace PracticaADO.Repositories
             this.reader.Close();
             this.cn.Close();
             return clientes;
+        }
+
+        public Cliente DatosCliente(string nomCliente)
+        {
+            SqlParameter paramCliente = new SqlParameter("@NOM_CLIENTE", nomCliente);
+            this.com.Parameters.Add(paramCliente);
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = "SP_DATOS_CLIENTE";
+            this.cn.Open();
+            this.reader = this.com.ExecuteReader();
+            this.reader.Read();
+            Cliente cliente = new Cliente();
+            cliente.Empresa = this.reader["Empresa"].ToString();
+            cliente.Telefono = int.Parse(this.reader["Telefono"].ToString());
+            cliente.Ciudad = this.reader["Ciudad"].ToString();
+            cliente.CodigoCliente = nomCliente;
+            cliente.Contacto = this.reader["Contacto"].ToString();
+            cliente.c
         }
     }
 }
