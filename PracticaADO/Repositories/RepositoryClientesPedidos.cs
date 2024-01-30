@@ -35,6 +35,30 @@ AS
 	FROM pedidos
 	WHERE CodigoCliente = @COD_CLIENTE
 GO
+
+CREATE OR ALTER PROCEDURE SP_DATOS_PEDIDO
+(@COD_PEDIDO NVARCHAR(MAX))
+AS
+	SELECT *
+	FROM pedidos
+	WHERE CodigoPedido = @COD_PEDIDO
+GO
+
+CREATE OR ALTER PROCEDURE SP_DELETE_PEDIDO
+(@COD_PEDIDO NVARCHAR(MAX))
+AS
+	DELETE FROM pedidos
+	WHERE CodigoPedido = @COD_PEDIDO
+GO
+
+CREATE OR ALTER PROCEDURE SP_CREATE_PEDIDO
+(@COD_PEDIDO NVARCHAR(MAX), @COD_CLIENTE NVARCHAR(MAX),
+@FECHA_ENTREGA DATETIME, @FORMA_ENVIO NVARCHAR(MAX),
+@IMPORTE INT)
+AS
+	INSERT INTO pedidos
+	VALUES (@COD_PEDIDO, @COD_CLIENTE, @FECHA_ENTREGA, @FORMA_ENVIO, @IMPORTE)
+GO
 */
 
 # endregion
@@ -110,6 +134,61 @@ namespace PracticaADO.Repositories
             this.cn.Close();
             this.com.Parameters.Clear();
             return pedidos;
+        }
+
+        public Pedido GetPedido(string codPedido)
+        {
+            SqlParameter paramPedido = new SqlParameter("@COD_PEDIDO", codPedido);
+            this.com.Parameters.Add(paramPedido);
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = "SP_DATOS_PEDIDO";
+            this.cn.Open();
+            this.reader = this.com.ExecuteReader();
+            this.reader.Read();
+            Pedido pedido = new Pedido();
+            pedido.CodigoPedido = codPedido;
+            pedido.CodigoCliente = this.reader["CodigoCliente"].ToString();
+            pedido.FormaEnvio = this.reader["FormaEnvio"].ToString();
+            pedido.FechaEntrega = this.reader["FechaEntrega"].ToString();
+            pedido.Importe = int.Parse(this.reader["Importe"].ToString());
+            this.reader.Close();
+            this.cn.Close();
+            this.com.Parameters.Clear();
+            return pedido;
+        }
+
+        public int CreatePedido(Pedido pedido)
+        {
+            SqlParameter paramCodPedido = new SqlParameter("@COD_PEDIDO", pedido.CodigoPedido);
+            SqlParameter paramCodCliente = new SqlParameter("@COD_CLIENTE", pedido.CodigoCliente);
+            SqlParameter paramImporte = new SqlParameter("@IMPORTE", pedido.Importe);
+            SqlParameter paramEnvio = new SqlParameter("@FORMA_ENVIO", pedido.FormaEnvio);
+            SqlParameter paramFechaEntrega = new SqlParameter("@FECHA_ENTREGA", pedido.FechaEntrega);
+            this.com.Parameters.Add(paramCodPedido);
+            this.com.Parameters.Add(paramCodCliente);
+            this.com.Parameters.Add(paramImporte);
+            this.com.Parameters.Add(paramEnvio);
+            this.com.Parameters.Add(paramFechaEntrega);
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = "SP_CREATE_PEDIDO";
+            this.cn.Open();
+            int result = this.com.ExecuteNonQuery();
+            this.cn.Close();
+            this.com.Parameters.Clear();
+            return result;
+        }
+
+        public int DeletePedido(string codPedido)
+        {
+            SqlParameter paramPedido = new SqlParameter("@COD_PEDIDO", codPedido);
+            this.com.Parameters.Add(paramPedido);
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = "SP_DELETE_PEDIDO";
+            this.cn.Open();
+            int result = this.com.ExecuteNonQuery();
+            this.cn.Close();
+            this.com.Parameters.Clear();
+            return result;
         }
     }
 }

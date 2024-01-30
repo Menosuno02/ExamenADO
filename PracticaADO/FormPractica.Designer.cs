@@ -170,6 +170,7 @@
             lstpedidos.Name = "lstpedidos";
             lstpedidos.Size = new Size(223, 340);
             lstpedidos.TabIndex = 15;
+            lstpedidos.SelectedIndexChanged += lstpedidos_SelectedIndexChanged;
             // 
             // txtfechaentrega
             // 
