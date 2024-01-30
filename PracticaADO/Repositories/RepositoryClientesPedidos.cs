@@ -105,10 +105,10 @@ namespace PracticaADO.Repositories
             this.reader = this.com.ExecuteReader();
             this.reader.Read();
             Cliente cliente = new Cliente();
-            cliente.Empresa = this.reader["Empresa"].ToString();
+            cliente.Empresa = nomCliente;
             cliente.Telefono = int.Parse(this.reader["Telefono"].ToString());
             cliente.Ciudad = this.reader["Ciudad"].ToString();
-            cliente.CodigoCliente = nomCliente;
+            cliente.CodigoCliente = this.reader["CodigoCliente"].ToString();
             cliente.Contacto = this.reader["Contacto"].ToString();
             cliente.Cargo = this.reader["Cargo"].ToString();
             this.reader.Close();
@@ -155,6 +155,22 @@ namespace PracticaADO.Repositories
             this.cn.Close();
             this.com.Parameters.Clear();
             return pedido;
+        }
+
+        public string GetCodigoCliente(string nomCliente)
+        {
+            SqlParameter paramCliente = new SqlParameter("@NOM_CLIENTE", nomCliente);
+            this.com.Parameters.Add(paramCliente);
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = "SP_DATOS_CLIENTE";
+            this.cn.Open();
+            this.reader = this.com.ExecuteReader();
+            this.reader.Read();
+            string codigo = this.reader["CodigoCliente"].ToString();
+            this.reader.Close();
+            this.cn.Close();
+            this.com.Parameters.Clear();
+            return codigo;
         }
 
         public int CreatePedido(Pedido pedido)
