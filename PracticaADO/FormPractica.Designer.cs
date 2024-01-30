@@ -71,6 +71,7 @@
             cmbclientes.Name = "cmbclientes";
             cmbclientes.Size = new Size(168, 32);
             cmbclientes.TabIndex = 1;
+            cmbclientes.SelectedIndexChanged += cmbclientes_SelectedIndexChanged;
             // 
             // label2
             // 

@@ -28,7 +28,7 @@ namespace PracticaADO.Repositories
 
         public RepositoryClientesPedidos()
         {
-            string connectionString = @"Data Source=LOCALHOST\SQLEXPRESS;Initial Catalog=NETCOREPRACTICA;Persist Security Info=True;User ID=SA;Password=MCSD2023;Trust Server Certificate=True";
+            string connectionString = @"Data Source=LOCALHOST\SQLEXPRESS;Initial Catalog=NETCOREPRACTICA;Persist Security Info=True;User ID=SA;Password=MCSD2023";
             this.cn = new SqlConnection(connectionString);
             this.com = new SqlCommand();
             this.com.Connection = this.cn;
@@ -40,9 +40,14 @@ namespace PracticaADO.Repositories
             this.com.CommandText = "SP_CLIENTES";
             this.cn.Open();
             this.reader = this.com.ExecuteReader();
+            List<string> clientes = new List<string>();
             while (this.reader.Read())
             {
+                clientes.Add(this.reader["EMPRESA"].ToString());
             }
+            this.reader.Close();
+            this.cn.Close();
+            return clientes;
         }
     }
 }

@@ -19,10 +19,10 @@ namespace PracticaADO
         {
             InitializeComponent();
             this.repo = new RepositoryClientesPedidos();
-        }
-
-        private void LoadClientes()
-        {
+            foreach (string cliente in this.repo.LoadClientes())
+            {
+                this.cmbclientes.Items.Add(cliente);
+            }
         }
 
         private void btnnuevopedido_Click(object sender, EventArgs e)
@@ -30,6 +30,10 @@ namespace PracticaADO
         }
 
         private void btneliminarpedido_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void cmbclientes_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
     }
