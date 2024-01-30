@@ -62,15 +62,16 @@ namespace PracticaADO
         {
             if (this.cmbclientes.SelectedIndex != -1)
             {
+                string nomEmpresa = this.cmbclientes.SelectedItem.ToString();
                 Pedido nuevoPedido = new Pedido();
-                nuevoPedido.CodigoCliente = this.repo.GetCodigoCliente(this.cmbclientes.SelectedItem.ToString());
+                nuevoPedido.CodigoCliente = this.repo.GetCodigoCliente(nomEmpresa);
                 nuevoPedido.CodigoPedido = this.txtcodigopedido.Text;
                 nuevoPedido.Importe = int.Parse(this.txtimporte.Text);
                 nuevoPedido.FormaEnvio = this.txtformaenvio.Text;
                 nuevoPedido.FechaEntrega = this.txtfechaentrega.Text;
                 int result = this.repo.CreatePedido(nuevoPedido);
                 this.lstpedidos.Items.Clear();
-                foreach (string pedido in this.repo.GetPedidosCliente(this.cmbclientes.SelectedItem.ToString()))
+                foreach (string pedido in this.repo.GetPedidosCliente(nomEmpresa))
                 {
                     this.lstpedidos.Items.Add(pedido);
                 }
