@@ -1,4 +1,5 @@
-﻿using PracticaADO.Repositories;
+﻿using PracticaADO.Models;
+using PracticaADO.Repositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,7 +39,17 @@ namespace PracticaADO
             if (this.cmbclientes.SelectedIndex != -1)
             {
                 string cliente = this.cmbclientes.SelectedItem.ToString();
-
+                Cliente datosCliente = this.repo.DatosCliente(cliente);
+                this.txtcargo.Text = datosCliente.Cargo;
+                this.txtempresa.Text = datosCliente.Empresa;
+                this.txtcontacto.Text = datosCliente.Contacto;
+                this.txtciudad.Text = datosCliente.Ciudad;
+                this.txttelefono.Text = datosCliente.Telefono.ToString();
+                this.lstpedidos.Items.Clear();
+                foreach (string pedido in this.repo.GetPedidosCliente(cliente))
+                {
+                    this.lstpedidos.Items.Add(pedido);
+                }
             }
         }
     }

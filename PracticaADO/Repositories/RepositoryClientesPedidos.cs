@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 /*
 CREATE OR ALTER PROCEDURE SP_CLIENTES
 AS
-	SELECT *
+	SELECT Empresa
 	FROM clientes
 GO
 
@@ -31,7 +31,7 @@ AS
 	SELECT @COD_CLIENTE = CodigoCliente
 	FROM clientes
 	WHERE Empresa = @NOM_CLIENTE
-	SELECT *
+	SELECT CodigoPedido
 	FROM pedidos
 	WHERE CodigoCliente = @COD_CLIENTE
 GO
@@ -64,7 +64,7 @@ namespace PracticaADO.Repositories
             List<string> clientes = new List<string>();
             while (this.reader.Read())
             {
-                clientes.Add(this.reader["EMPRESA"].ToString());
+                clientes.Add(this.reader["Empresa"].ToString());
             }
             this.reader.Close();
             this.cn.Close();
@@ -86,7 +86,30 @@ namespace PracticaADO.Repositories
             cliente.Ciudad = this.reader["Ciudad"].ToString();
             cliente.CodigoCliente = nomCliente;
             cliente.Contacto = this.reader["Contacto"].ToString();
-            cliente.c
+            cliente.Cargo = this.reader["Cargo"].ToString();
+            this.reader.Close();
+            this.cn.Close();
+            this.com.Parameters.Clear();
+            return cliente;
+        }
+
+        public List<string> GetPedidosCliente(string nomCliente)
+        {
+            SqlParameter paramCliente = new SqlParameter("@NOM_CLIENTE", nomCliente);
+            this.com.Parameters.Add(paramCliente);
+            this.com.CommandType = CommandType.StoredProcedure;
+            this.com.CommandText = "SP_PEDIDOS_CLIENTE";
+            this.cn.Open();
+            this.reader = this.com.ExecuteReader();
+            List<string> pedidos = new List<string>();
+            while (this.reader.Read())
+            {
+                pedidos.Add(this.reader["CodigoPedido"].ToString());
+            }
+            this.reader.Close();
+            this.cn.Close();
+            this.com.Parameters.Clear();
+            return pedidos;
         }
     }
 }
